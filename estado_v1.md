@@ -9,7 +9,7 @@
 **Database:** `ParrillaBI`
 
 Nesta versão, o projeto possui uma base histórica carregada no SQL Server,
-modelo analítico, consultas SQL, views e dashboards em Power BI.
+modelo dimensional, consultas SQL, views analíticas e dashboards em Power BI.
 
 Os dados ainda são estáticos e não existe uma camada automatizada de ingestão.
 
@@ -32,7 +32,7 @@ Principais volumes:
 
 ## Modelo de dados
 
-O banco atualmente utiliza uma estrutura dimensional para suportar as análises.
+O banco atualmente utiliza uma estrutura dimensional voltada ao consumo analítico.
 
 ### Dimensões
 
@@ -51,7 +51,7 @@ O banco atualmente utiliza uma estrutura dimensional para suportar as análises.
 
 ## Funcionários e comissão
 
-A versão atual também contém informações de funcionários associadas aos pedidos.
+A V1 também incorpora informações de funcionários e regras de comissão.
 
 Foram adicionadas:
 
@@ -64,12 +64,19 @@ Foram adicionadas:
 
 ## Camada analítica
 
-A principal view utilizada para consumo analítico no Power BI é:
+A principal view utilizada para consumo no Power BI é:
 
 - `vw_vendas_itens`
 
-Essa view trabalha na granularidade de item do pedido e reúne informações
-necessárias para análises de vendas, produtos, categorias e canais.
+A view trabalha na granularidade de item do pedido e reúne informações
+necessárias para análises de:
+
+- vendas;
+- produtos;
+- categorias;
+- canais;
+- pedidos;
+- evolução temporal.
 
 ---
 
@@ -77,7 +84,7 @@ necessárias para análises de vendas, produtos, categorias e canais.
 
 O Power BI consome os dados preparados no SQL Server.
 
-A V1 possui duas páginas principais:
+A V1 possui duas páginas principais.
 
 ### Dashboard Geral
 
@@ -93,7 +100,7 @@ Visão geral da operação contendo indicadores e análises de:
 
 ### 01 — Receita
 
-Página desenvolvida com foco em storytelling e análise de receita.
+Página desenvolvida com maior foco em storytelling e interpretação dos indicadores.
 
 Principais análises:
 
@@ -109,55 +116,13 @@ Principais análises:
 
 ## Arquitetura atual
 
-O fluxo atual é:
-
+```text
 CSV
-→ SQL Server
-→ Modelo Analítico
-→ Views
-→ Power BI
-
-A carga inicial dos arquivos foi realizada por scripts SQL utilizando
-`BULK INSERT`.
-
----
-
-## Limitações da V1
-
-Nesta versão ainda não existem:
-
-- geração contínua de novos pedidos;
-- API de ingestão;
-- camada RAW;
-- camada STAGING;
-- pipeline ETL automatizado;
-- carga incremental;
-- monitoramento do pipeline;
-- processamento periódico.
-
-O conjunto de dados funciona atualmente como uma base histórica estática.
-
----
-
-## Próxima evolução
-
-A próxima fase do Parrilla BI será voltada à introdução de conceitos de
-Engenharia de Dados.
-
-Arquitetura planejada:
-
-Python + Faker
-→ FastAPI
-→ RAW
-→ STAGING
-→ ETL
-→ Data Warehouse
-→ Power BI
-
-### Objetivo
-
-Simular a geração de novos pedidos e construir um fluxo de ingestão,
-processamento e disponibilização dos dados para análise.
-
-O modelo dimensional desenvolvido na V1 será preservado como camada
-analítica / Data Warehouse do projeto.
+ ↓
+SQL Server
+ ↓
+Modelo Dimensional
+ ↓
+Views
+ ↓
+Power BI
